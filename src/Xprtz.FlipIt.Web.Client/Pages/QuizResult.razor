@@ -1,0 +1,44 @@
+﻿@page "/quiz/{QuizId:guid}"
+@inject IQuizApi QuizApi
+@inject NavigationManager Navigation
+
+<h3>Results</h3>
+
+@if (_quiz == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @if (_quiz.NumberOfAnsweredQuestions < _quiz.NumberOfQuestions)
+    {
+        <p>You didn't finish the quiz!</p>
+        <Button Color="Color.Primary" Clicked="ContinueQuiz">Continue Quiz</Button>
+    }
+    else
+    {
+        <p>You answered @(_quiz.NumberOfCorrectAnswers) out of @(_quiz.NumberOfAnsweredQuestions) correctly!</p>
+    }
+}
+
+@code {
+    private Contract.Quizzes.Quiz? _quiz;
+
+    [Parameter]
+    public required Guid QuizId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await QuizApi.Get(QuizId);
+        if (response.IsSuccessStatusCode)
+        {
+            _quiz = response.Content;
+        }
+    }
+
+    private void ContinueQuiz(MouseEventArgs obj)
+    {
+        Navigation.NavigateTo($"/quiz/{QuizId}/question");
+    }
+
+}

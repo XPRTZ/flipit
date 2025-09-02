@@ -1,0 +1,7 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="FlipIt" type="CompoundRunConfigurationType">
+    <toRun name="Xprtz.FlipIt.ApiService: http" type="LaunchSettings" />
+    <toRun name="Xprtz.FlipIt.Web: Watchable" type="LaunchSettings" />
+    <method v="2" />
+  </configuration>
+</component>

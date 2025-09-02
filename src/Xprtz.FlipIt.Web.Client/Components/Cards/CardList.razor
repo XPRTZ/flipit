@@ -1,0 +1,67 @@
+﻿@using Card = Xprtz.FlipIt.Contract.Cards.Card
+
+@if (Topic is not null)
+{
+    <h4>@Topic.Name</h4>
+}
+<DataGrid TItem="Card" Data="Cards" @bind-SelectedRow="@_selectedCard" Responsive Editable Filterable ShowPager CommandMode="DataGridCommandMode.Commands" EditMode="DataGridEditMode.Inline">
+    <DataGridColumns>
+        <DataGridCommandColumn NewCommandAllowed EditCommandAllowed DeleteCommandAllowed>
+            <NewCommandTemplate>
+                <Button Color="Color.Primary" Clicked="context.Clicked">@context.LocalizationString</Button>
+            </NewCommandTemplate>
+            <EditCommandTemplate>
+                <Button Color="Color.Success" Clicked="context.Clicked">@context.LocalizationString</Button>
+            </EditCommandTemplate>
+            <DeleteCommandTemplate>
+                <Button Color="Color.Danger" Clicked="async _ => await DeleteCard(context)">@context.LocalizationString</Button>
+            </DeleteCommandTemplate>
+            <SaveCommandTemplate>
+                <Button Color="Color.Primary" Clicked="async _ => await SaveCard(context)">@context.LocalizationString</Button>
+            </SaveCommandTemplate>
+            <CancelCommandTemplate>
+                <Button Color="Color.Secondary" Clicked="context.Clicked">@context.LocalizationString</Button>
+            </CancelCommandTemplate>
+        </DataGridCommandColumn>
+        <DataGridColumn Field="@nameof(Card.Front)" Caption="@(Topic is null ? "Front" : Topic.FrontLabel)" Editable />
+        <DataGridColumn Field="@nameof(Card.Back)" Caption="@(Topic is null ? "Back" : Topic.BackLabel)" Editable />
+    </DataGridColumns>
+</DataGrid>
+
+<Button Color="Color.Primary" Clicked="GoToTopics">Back To Topics</Button>
+
+@code {
+    [Parameter]
+    public Topic? Topic { get; set; }
+    
+    [Parameter]
+    public required IReadOnlyCollection<Card> Cards { get; set; }
+    
+    [Parameter]
+    public EventCallback<Card> OnCardSaved { get; set; }
+    
+    [Parameter]
+    public EventCallback<Card> OnCardDeleted { get; set; }
+    
+    [Parameter]
+    public EventCallback<Card> OnGoToTopicsClicked { get; set; }
+    
+    private Card? _selectedCard;
+
+    private async Task SaveCard(CommandContext<Card> context)
+    {
+        await context.Clicked.InvokeAsync(null);
+        await OnCardSaved.InvokeAsync(context.Item);
+    }
+    
+    private async Task DeleteCard(CommandContext<Card> context)
+    {
+        await context.Clicked.InvokeAsync(null);
+        await OnCardDeleted.InvokeAsync(context.Item);
+    }
+    
+    private async Task GoToTopics()
+    {
+        await OnGoToTopicsClicked.InvokeAsync();
+    }
+}

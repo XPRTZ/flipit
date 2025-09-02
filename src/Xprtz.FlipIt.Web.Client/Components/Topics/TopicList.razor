@@ -1,0 +1,65 @@
+﻿<DataGrid TItem="Topic" Data="Topics" @bind-SelectedRow="@_selectedTopic" Responsive Editable Filterable ShowPager CommandMode="DataGridCommandMode.Commands" EditMode="DataGridEditMode.Inline">
+    <DataGridColumns>
+        <DataGridCommandColumn NewCommandAllowed EditCommandAllowed DeleteCommandAllowed>
+            <NewCommandTemplate>
+                <Button Color="Color.Primary" Clicked="context.Clicked">@context.LocalizationString</Button>
+            </NewCommandTemplate>
+            <EditCommandTemplate>
+                <Button Color="Color.Success" Clicked="context.Clicked">@context.LocalizationString</Button>
+            </EditCommandTemplate>
+            <DeleteCommandTemplate>
+                <Button Color="Color.Danger" Clicked="async _ => await DeleteTopic(context)">@context.LocalizationString</Button>
+            </DeleteCommandTemplate>
+            <SaveCommandTemplate>
+                <Button Color="Color.Primary" Clicked="async _ => await SaveTopic(context)">@context.LocalizationString</Button>
+            </SaveCommandTemplate>
+            <CancelCommandTemplate>
+                <Button Color="Color.Secondary" Clicked="context.Clicked">@context.LocalizationString</Button>
+            </CancelCommandTemplate>
+        </DataGridCommandColumn>
+        <DataGridColumn Field="@nameof(Topic.Name)" Caption="Name" Editable />
+        <DataGridColumn Field="@nameof(Topic.FrontLabel)" Caption="Front Label" Editable />
+        <DataGridColumn Field="@nameof(Topic.BackLabel)" Caption="Back Label" Editable />
+        <DataGridColumn Field="@nameof(Topic.Id)" Caption="Cards">
+            <DisplayTemplate>
+                @if (context.Id != Guid.Empty)
+                {
+                    <Button Color="Color.Primary" Clicked="_ => GoToCards(context)">Cards</Button>
+                }
+            </DisplayTemplate>
+        </DataGridColumn>
+    </DataGridColumns>
+</DataGrid>
+
+@code {
+    [Parameter]
+    public required IReadOnlyCollection<Topic> Topics { get; set; }
+    
+    [Parameter]
+    public EventCallback<Topic> OnTopicSaved { get; set; }
+    
+    [Parameter]
+    public EventCallback<Topic> OnTopicDeleted { get; set; }
+    
+    [Parameter]
+    public EventCallback<Topic> OnGoToCardsClicked { get; set; }
+    
+    private Topic? _selectedTopic;
+    
+    async Task SaveTopic(CommandContext<Topic> context)
+    {
+        await context.Clicked.InvokeAsync(null);
+        await OnTopicSaved.InvokeAsync(context.Item);
+    }
+    
+    async Task DeleteTopic(CommandContext<Topic> context)
+    {
+        await context.Clicked.InvokeAsync(null);
+        await OnTopicDeleted.InvokeAsync(context.Item);
+    }
+    
+    async Task GoToCards(Topic topic)
+    {
+        await OnGoToCardsClicked.InvokeAsync(topic);
+    }
+}

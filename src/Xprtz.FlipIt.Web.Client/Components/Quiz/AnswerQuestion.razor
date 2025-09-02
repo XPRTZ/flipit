@@ -1,0 +1,28 @@
+﻿<Card Margin="Margin.Is4.OnY">
+    <CardBody>
+        <CardText TextSize="TextSize.Medium" Margin="Margin.Is4.FromBottom.Is2.FromStart">
+            Did you get it right?
+        </CardText>
+        <CardFooter Position="Position.Relative">
+            <Buttons Position="Position.Absolute.End.Is0.Translate.MiddleY" Margin="Margin.Is2.FromTop">
+                <Button Color="Color.Primary" Clicked="@Yes">Yes</Button>
+                <Button Color="Color.Danger" Clicked="@No">No</Button>
+            </Buttons>
+        </CardFooter>
+    </CardBody>
+</Card>
+
+@code {
+    
+    [Parameter] public EventCallback<bool> OnAnswered { get; set; }
+
+    private async Task Yes()
+    {
+        await OnAnswered.InvokeAsync(true);
+    }
+    
+    private async Task No()
+    {
+        await OnAnswered.InvokeAsync(false);
+    }
+}

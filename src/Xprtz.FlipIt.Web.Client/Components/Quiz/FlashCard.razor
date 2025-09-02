@@ -1,0 +1,62 @@
+﻿@if (!IsFlipped)
+{
+    if (_showFront)
+    {
+        <FlashcardSide Label="@Question?.FrontLabel" Text="@Question?.FrontText" OnFlipped="@OnFlippedChanged"/>
+    }
+    else
+    {
+        <FlashcardSide Label="@Question?.BackLabel" Text="@Question?.BackText" OnFlipped="@OnFlippedChanged" />
+    }
+}
+else
+{
+    if (_showFront)
+    {
+        <Div ElementId="#front">
+            <Animate Anchor="#front" Auto Animation="Animations.FlipRight">
+                <FlashcardSide Label="@Question?.FrontLabel" Text="@Question?.FrontText" OnFlipped="@OnFlippedChanged" />
+            </Animate>
+        </Div>
+    }
+    else
+    {
+        <Div ElementId="#back">
+            <Animate Anchor="#back" Auto Animation="Animations.FlipRight">
+                <FlashcardSide Label="@Question?.BackLabel" Text="@Question?.BackText" OnFlipped="@OnFlippedChanged" />
+            </Animate>
+        </Div>
+    }   
+}
+
+@code {
+    [Parameter] public required Question? Question { get; set; }
+    
+    [Parameter] public bool IsFlipped { get; set; }
+    
+    [Parameter] public EventCallback OnFlipped { get; set; }
+
+    private bool _showFront;
+
+    protected override void OnParametersSet()
+    {
+        if (!IsFlipped && Question is not null)
+        {
+            _showFront = Question.ShowFirst == FrontOrBack.Front;
+        }
+
+        base.OnParametersSet();
+    }
+
+    private async Task OnFlippedChanged()
+    {
+        _showFront = !_showFront;
+        await Animate();
+        await OnFlipped.InvokeAsync();
+    }
+
+    private async Task Animate()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+}

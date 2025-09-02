@@ -1,0 +1,96 @@
+﻿@page "/topics/{TopicId:guid}/cards"
+@using Card = Xprtz.FlipIt.Contract.Cards.Card
+@inject ICardApi CardApi
+@inject ITopicApi TopicApi
+@inject NavigationManager Navigation
+
+<h3>Cards</h3>
+
+<CardList Topic="_topic" Cards="_cards" OnCardSaved="SaveCard" OnCardDeleted="DeleteCard" OnGoToTopicsClicked="GoToTopics"/>
+
+@code {
+    private IReadOnlyCollection<Card> _cards = new List<Card>();
+    private Topic? _topic;
+
+    [Parameter]
+    public required Guid TopicId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTopic();
+        await LoadCards();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadTopic()
+    {
+        var response = await TopicApi.Get(TopicId);
+        if (response.IsSuccessStatusCode)
+        {
+            _topic = response.Content;
+        }
+        
+    }
+
+    private async Task LoadCards()
+    {
+        var response = await CardApi.GetAll(TopicId);
+        if (response.IsSuccessStatusCode)
+        {
+            _cards = response.Content ?? new List<Card>();
+        }
+    }
+
+    private async Task SaveCard(Card card)
+    {
+        if (card.Id == Guid.Empty)
+        {
+            await CreateCard(card);
+        }
+        else
+        {
+            await UpdateCard(card);
+        }
+    }
+
+    private async Task UpdateCard(Card card)
+    {
+        var result = await CardApi.Update(TopicId, card.Id, new()
+        {
+            Front = card.Front,
+            Back = card.Back
+        });
+
+        if (!result.IsSuccessStatusCode)
+        {
+            await LoadCards();
+        }
+    }
+
+    private async Task CreateCard(Card card)
+    {
+        var result = await CardApi.Create(TopicId, new()
+        {
+            Front = card.Front,
+            Back = card.Back
+        });
+
+        await LoadCards();
+    }
+    
+    private async Task DeleteCard(Card card)
+    {
+        var result = await CardApi.Delete(TopicId, card.Id);
+
+        if (!result.IsSuccessStatusCode)
+        {
+            await LoadCards();
+        }
+    }
+    
+    private void GoToTopics()
+    {
+        Navigation.NavigateTo("/topics");
+    }
+}

@@ -1,0 +1,58 @@
+﻿@page "/quiz/{QuizId:guid}/question"
+@using System.Net
+@using Question = Xprtz.FlipIt.Contract.Quizzes.Question
+@inject IQuizApi QuizApi
+@inject NavigationManager Navigation
+
+<h3>QuizQuestion</h3>
+<FlashCard Question="_question" IsFlipped="_isFlipped" OnFlipped="@OnFlippedChanged"></FlashCard>
+@if (_isFlipped)
+{
+    <Div ElementId="#b-animate">
+        <Animate Anchor="#b-animate" Auto Animation="Animations.FadeIn" DelayMilliseconds="500">
+            <AnswerQuestion OnAnswered="@OnQuestionAnswered"></AnswerQuestion>
+        </Animate>
+    </Div>
+}
+@code {
+    private Question? _question;
+    private bool _isFlipped;
+
+    [Parameter]
+    public required Guid QuizId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNextQuestion();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadNextQuestion()
+    {
+        var response = await QuizApi.GetNextQuestion(QuizId);
+        if (response.IsSuccessStatusCode)
+        {
+            _question = response.Content;
+        }
+        else if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            Navigation.NavigateTo($"/quiz/{QuizId}");
+        }
+    }
+
+    private void OnFlippedChanged()
+    {
+        _isFlipped = true;
+    }
+
+    private async Task OnQuestionAnswered(bool answer)
+    {
+        var response = await QuizApi.AnswerQuestion(QuizId, new() { IsCorrect = answer, QuestionId = _question!.Id });
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadNextQuestion();
+            _isFlipped = false;
+        }
+    }
+}

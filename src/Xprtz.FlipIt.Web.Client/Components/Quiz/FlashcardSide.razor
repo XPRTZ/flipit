@@ -1,0 +1,24 @@
+﻿<Card Margin="Margin.Is4.OnY">
+    <CardBody>
+        <CardTitle Size="6" Margin="Margin.Is2.FromStart" TextTransform="TextTransform.Uppercase">@Label</CardTitle>
+        <CardText TextSize="TextSize.Medium" Margin="Margin.Is4.FromBottom.Is2.FromStart">
+            @Text
+        </CardText>
+        <CardFooter Position="Position.Relative">
+            <Button Position="Position.Absolute.End.Is0.Translate.MiddleY" Margin="Margin.Is2.FromTop" Color="Color.Primary" Clicked="@Flip">Flip It</Button>
+        </CardFooter>
+    </CardBody>
+</Card>
+
+@code {
+    [Parameter] public required string Label { get; set; }
+    [Parameter] public required string Text { get; set; }
+    
+    [Parameter] public EventCallback OnFlipped { get; set; }
+
+    private async Task Flip()
+    {
+        await OnFlipped.InvokeAsync();
+    }
+
+}

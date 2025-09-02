@@ -1,0 +1,63 @@
+﻿@page "/quiz"
+@inject ITopicApi TopicApi
+@inject IQuizApi QuizApi
+@inject NavigationManager Navigation
+
+<QuizForm Topics="_topics" OnQuizStarted="QuizStarted" />
+
+<Heading Size="HeadingSize.Is5">Previous quizzes</Heading>
+<QuizList Quizzes="_quizzes" OnQuizDeleted="DeleteQuiz"></QuizList>
+
+@code {
+    private IReadOnlyCollection<Topic> _topics = new List<Topic>();
+    private IReadOnlyCollection<Contract.Quizzes.Quiz> _quizzes = new List<Contract.Quizzes.Quiz>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTopics();
+        await LoadQuizzes();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadTopics()
+    {
+        var response = await TopicApi.GetAll();
+        if (response.IsSuccessStatusCode)
+        {
+            _topics = response.Content ?? new List<Topic>();
+        }
+    }
+    
+    private async Task LoadQuizzes()
+    {
+        var response = await QuizApi.GetAll();
+        if (response.IsSuccessStatusCode)
+        {
+            _quizzes = response.Content ?? new List<Contract.Quizzes.Quiz>();
+        }
+    }
+
+    private async Task QuizStarted(QuizRequest quiz)
+    {
+        var response = await QuizApi.Create(quiz);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo($"/quiz/{response.Content?.Id}/question");
+        }
+        else
+        {
+            Console.WriteLine($"Failed to start quiz: {response.Error}");
+        }
+    }
+
+    private async Task DeleteQuiz(Contract.Quizzes.Quiz quiz)
+    {
+        var result = await QuizApi.Delete(quiz.Id);
+        if (result.IsSuccessStatusCode)
+        {
+            await LoadQuizzes();
+        }
+    }
+}

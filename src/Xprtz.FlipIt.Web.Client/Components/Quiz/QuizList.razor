@@ -1,0 +1,36 @@
+﻿@using Quiz = Xprtz.FlipIt.Contract.Quizzes.Quiz
+
+<DataGrid TItem="Quiz" Data="Quizzes" @bind-SelectedRow="@_selectedQuiz">
+    <DataGridColumns>
+        <DataGridColumn Field="@nameof(Quiz.TopicName)" Caption="Topic" />
+        <DataGridColumn Field="@nameof(Quiz.IsPracticeMode)" Caption="Practice mode?" />
+        <DataGridColumn Field="@nameof(Quiz.NumberOfQuestions)" Caption="Number of questions" />
+        <DataGridColumn Field="@nameof(Quiz.IsCompleted)" Caption="Is completed?" />
+    </DataGridColumns>
+</DataGrid>
+
+@if (_selectedQuiz is not null)
+{
+    <Button Color="Color.Primary" Clicked="DeleteQuiz">Delete Selected Quiz</Button>
+}
+
+@code {
+    
+    [Parameter]
+    public required IReadOnlyCollection<Quiz> Quizzes { get; set; }
+    
+    [Parameter]
+    public EventCallback<Quiz> OnQuizDeleted { get; set; }
+    
+    private Quiz? _selectedQuiz;
+
+    protected override void OnParametersSet()
+    {
+        _selectedQuiz = null;
+    }
+
+    private async Task DeleteQuiz()
+    {
+        await OnQuizDeleted.InvokeAsync(_selectedQuiz);
+    }
+}

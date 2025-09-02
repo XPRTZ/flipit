@@ -1,0 +1,66 @@
+﻿
+<Card Margin="Margin.Is4.FromBottom">
+    <CardHeader>
+        <CardTitle>Take a quiz!</CardTitle>
+    </CardHeader>
+    <CardBody>
+        <Field>
+            <Check TValue="bool" @bind-Checked="@_practiceMode">Practice mode?</Check>
+            <FieldHelp>In practice mode, the results of the quiz will not be saved.</FieldHelp>
+        </Field>
+        <Field>
+            <FieldLabel>Topic</FieldLabel>
+            <Select @bind-SelectedValue="@_selectedTopic">
+                @foreach (var topic in Topics)
+                {
+                    <SelectItem Value="@topic">@topic.Name</SelectItem>
+                }
+            </Select>
+            <FieldHelp>Choose the topic you want to quiz yourself on.</FieldHelp>
+        </Field>
+        <Field>
+            <FieldLabel>Number of questions</FieldLabel>
+            <NumericEdit @bind-Value="@_numberOfQuestions" Placeholder="Leave this blank to use all cards" />
+            <FieldHelp>The cards shown will be cards that you haven't seen much or answered incorrectly before.</FieldHelp>
+        </Field>
+        <Field>
+            <FieldLabel>Front or back?</FieldLabel>
+            <Select @bind-SelectedValue="@_frontOrBack">
+                <SelectItem Value="@FrontOrBack.Front">Front</SelectItem>
+                <SelectItem Value="@FrontOrBack.Back">Back</SelectItem>
+            </Select>
+            <FieldHelp>Do you want the cards to start showing the front or the back?</FieldHelp>
+        </Field>
+        <Button Color="Color.Primary" Clicked="StartQuiz">Start quiz</Button>
+    </CardBody>
+</Card>
+
+@code {
+    [Parameter]
+    public required IReadOnlyCollection<Topic> Topics { get; set; }
+    
+    [Parameter]
+    public EventCallback<QuizRequest> OnQuizStarted { get; set; }
+
+    private bool _practiceMode;
+    private Topic? _selectedTopic;
+    private int? _numberOfQuestions;
+    private FrontOrBack _frontOrBack = FrontOrBack.Front;
+
+    protected override void OnParametersSet()
+    {
+        _selectedTopic = Topics.FirstOrDefault();
+    }
+
+    async Task StartQuiz()
+    {
+        await OnQuizStarted.InvokeAsync(new()
+        {
+            IsPracticeMode = _practiceMode,
+            NumberOfQuestions = _numberOfQuestions,
+            ShowFirst = _frontOrBack,
+            TopicId = _selectedTopic!.Id,
+            TopicName = _selectedTopic!.Name
+        });
+    }
+}

@@ -1,0 +1,81 @@
+﻿@page "/topics"
+@inject ITopicApi TopicApi
+@inject NavigationManager Navigation
+
+<h3>Topics</h3>
+
+<TopicList Topics="_topics" OnTopicSaved="SaveTopic" OnTopicDeleted="DeleteTopic" OnGoToCardsClicked="GoToCards" />
+@code {
+    private IReadOnlyCollection<Topic> _topics = new List<Topic>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTopics();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task LoadTopics()
+    {
+        var response = await TopicApi.GetAll();
+        if (response.IsSuccessStatusCode)
+        {
+            _topics = response.Content ?? new List<Topic>();
+        }
+    }
+
+    private async Task SaveTopic(Topic topic)
+    {
+        if (topic.Id == Guid.Empty)
+        {
+            await CreateTopic(topic);
+        }
+        else
+        {
+            await UpdateTopic(topic);
+        }
+    }
+
+    private async Task UpdateTopic(Topic topic)
+    {
+        var result = await TopicApi.Update(topic.Id, new()
+        {
+            Name = topic.Name,
+            FrontLabel = topic.FrontLabel,
+            BackLabel = topic.BackLabel
+        });
+
+        if (!result.IsSuccessStatusCode)
+        {
+            await LoadTopics();
+        }
+    }
+
+    private async Task CreateTopic(Topic topic)
+    {
+        var result = await TopicApi.Create(new()
+        {
+            Name = topic.Name,
+            FrontLabel = topic.FrontLabel,
+            BackLabel = topic.BackLabel
+        });
+
+        await LoadTopics();
+    }
+    
+    private async Task DeleteTopic(Topic topic)
+    {
+        var result = await TopicApi.Delete(topic.Id);
+
+        if (!result.IsSuccessStatusCode)
+        {
+            await LoadTopics();
+        }
+    }
+    
+    private void GoToCards(Topic topic)
+    {
+        Navigation.NavigateTo($"/topics/{topic.Id}/cards");
+    }
+    
+}

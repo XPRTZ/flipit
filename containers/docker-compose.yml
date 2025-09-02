@@ -1,0 +1,25 @@
+name: flipit
+
+services:
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "61433:1433"
+    environment:
+      SA_PASSWORD: "DevOnly123!"
+      ACCEPT_EULA: "Y"
+    restart: always
+    volumes:
+      - sql_data:/var/opt/mssql
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass DevOnly123!
+    restart: always
+    volumes:
+      - redis_data:/data
+
+volumes:
+  sql_data:
+  redis_data:
