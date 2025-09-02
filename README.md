@@ -1,2 +1,2 @@
-# flashcards
+# FlipIt
 flashcard application
