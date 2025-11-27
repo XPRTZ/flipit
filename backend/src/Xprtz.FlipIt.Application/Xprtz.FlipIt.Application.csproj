@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit.Abstractions" Version="8.5.5"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.10"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Xprtz.FlipIt.Domain\Xprtz.FlipIt.Domain.csproj"/>
+        <ProjectReference Include="..\Xprtz.FlipIt.Generators\Xprtz.FlipIt.Generators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="ErrorOr"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Xprtz.FlipIt.Infrastructure"/>
+        <InternalsVisibleTo Include="Xprtz.FlipIt.Application.Tests"/>
+    </ItemGroup>
+
+</Project>

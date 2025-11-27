@@ -1,0 +1,52 @@
+@use '@angular/material' as mat
+
+.form-field
+    margin-bottom: 16px
+
+.form-label
+    display: block
+    margin-bottom: 4px
+    line-height: 1.5rem
+    text-transform: uppercase
+
+.create-quiz-container
+  background: var(--mat-sys-surface-container)
+  color: var(--mat-sys-on-surface-container)
+  margin-bottom: 16px
+
+.create-quiz-button-toggle-group
+    width: 600px
+
+.create-quiz-button-toggle
+    width: 50%
+    padding: 8px
+    @include mat.button-toggle-overrides((
+        label-text-weight: normal
+    ))
+
+    label
+        display: block
+        text-align: start
+        text-transform: uppercase
+        font-weight: bold
+
+.create-quiz-button-toggle-description    
+    display: inline-block
+    width: 250px
+    height: 76px
+    white-space: normal
+    line-height: 1.3em
+    text-align: start
+
+.create-quiz-slider
+    min-width: 300px
+    @include mat.slider-overrides((
+        active-track-shape: 16px,
+    ))
+
+.start-button
+  @include mat.button-overrides((
+    tonal-label-text-transform: uppercase,
+    tonal-container-color: var(--mat-sys-on-secondary-container),
+    tonal-label-text-color: var(--mat-sys-secondary-container)
+  ))

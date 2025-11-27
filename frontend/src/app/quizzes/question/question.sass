@@ -1,0 +1,50 @@
+.question-card
+    display: flex
+    width: 50%
+    height: 200px
+    justify-content: center
+    align-items: center
+    padding: 16px
+    margin: 16px auto
+    position: absolute
+    left: 0
+    right: 0
+    cursor: pointer
+    visibility: hidden
+    backface-visibility: hidden
+    transform: rotateY(180deg)
+    transition: transform 0.6s ease-in-out, visibility 0s 0.6s
+
+    .question-card-content
+        font-size: 1.2rem
+        text-align: center
+        padding: 8px
+        font-weight: bold
+
+.question-card-visible
+    visibility: visible
+    transform: rotateY(0deg)
+    transition: transform 0.6s ease-in-out, visibility 0s 0.3s
+
+.question-answer-card
+    position: absolute
+    width: calc(100% - 32px)
+    bottom: 16px
+    visibility: hidden
+    opacity: 0
+    transition: visibility 0s 0.3s, opacity 0.3s
+
+    .question-answer-card-content
+        font-size: 1.2rem
+        line-height: 1.5rem
+
+    button + button
+        margin-left: 8px
+
+.question-answer-card-visible
+    visibility: visible
+    opacity: 1
+    transition: visibility 0s, opacity 0.3s
+
+.hide-transition
+    display: none

@@ -1,0 +1,50 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat
+
+:host
+  background: var(--mat-sys-primary-container)
+  color: var(--mat-sys-on-primary-container)
+  border: 1px solid var(--mat-sys-outline-variant)
+
+.success-snackbar
+  @include mat.snack-bar-overrides((
+    supporting-text-color: var(--mat-sys-on-secondary-container),
+    button-color: var(--mat-sys-on-secondary-container),
+    container-color: var(--mat-sys-secondary-container)
+  ))
+
+.error-snackbar
+  @include mat.snack-bar-overrides((
+    supporting-text-color: var(--mat-sys-on-error-container),
+    button-color: var(--mat-sys-on-error-container),
+    container-color: var(--mat-sys-error-container)
+  ))
+
+.navbar-button
+  text-transform: uppercase
+  margin: 8px 8px 8px 0
+  @include mat.fab-overrides((
+    container-color: var(--mat-sys-secondary-container),
+    foreground-color: var(--mat-sys-on-secondary-container)
+  ))
+
+.save-button
+  @include mat.button-overrides((
+    tonal-label-text-transform: uppercase,
+    tonal-container-color: var(--mat-sys-secondary-container),
+    tonal-label-text-color: var(--mat-sys-on-secondary-container)
+  ))
+
+.cancel-button
+  @include mat.button-overrides((
+    tonal-label-text-transform: uppercase,
+    tonal-container-color: var(--mat-sys-tertiary-container),
+    tonal-label-text-color: var(--mat-sys-on-tertiary-container)
+  ))
+
+.delete-button
+  @include mat.button-overrides((
+    tonal-label-text-transform: uppercase,
+    tonal-container-color: var(--mat-sys-error-container),
+    tonal-label-text-color: var(--mat-sys-on-error-container)
+  ))

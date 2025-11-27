@@ -1,0 +1,47 @@
+table
+  width: 100%
+
+tr.edit-item-row
+  height: 0
+
+tr.item-row-editable
+  cursor: pointer
+
+tr.item-row:not(.item-expanded-row):hover
+  color: var(--mat-sys-on-secondary-container)
+  background-color: var(--mat-sys-secondary-container)
+
+tr.item-expanded-row
+  color: var(--mat-sys-on-secondary-container)
+  background-color: var(--mat-sys-secondary-container)
+
+.item-row td 
+  border-bottom-width: 0
+
+.toggle-button
+  transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1)
+
+.toggle-button-expanded
+  transform: rotate(180deg)
+
+.edit-item-wrapper
+  overflow: hidden
+  display: grid
+  grid-template-rows: 0fr
+  grid-template-columns: 100%
+  transition: grid-template-rows 225ms cubic-bezier(0.4, 0, 0.2, 1)
+
+.edit-item-wrapper-expanded
+  grid-template-rows: 1fr
+
+.edit-item
+  display: flex
+  min-height: 0
+
+.header-row
+  text-transform: uppercase
+
+.add-item-container
+  margin-bottom: 16px
+  background: var(--mat-sys-surface-container)
+  color: var(--mat-sys-on-surface-container)

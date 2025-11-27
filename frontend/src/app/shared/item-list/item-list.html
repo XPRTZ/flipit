@@ -1,0 +1,65 @@
+@if (editable()) {
+  <mat-expansion-panel class="add-item-container">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>add</mat-icon>
+        Add {{name()}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-add-item [columns]="columns()" (save)="addItem($event)"></app-add-item>
+  </mat-expansion-panel>
+}
+
+<table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows class="mat-elevation-z8">
+  @for (column of columnsToDisplay(); track column) {
+  <ng-container matColumnDef="{{column}}">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{getLabel(column)}}</th>
+    <td mat-cell *matCellDef="let item">
+      <ng-template [ngTemplateOutlet]="valueTemplate() || defaultValueTemplate"
+        [ngTemplateOutletContext]="{item: item, column: column}"></ng-template>
+    </td>
+  </ng-container>
+  }
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let item">
+      @if (editable()) {
+        <button matIconButton matTooltip="edit {{name()}}" aria-label="expand row"
+          (click)="toggle(item); $event.stopPropagation()" class="toggle-button"
+          [class.toggle-button-expanded]="isExpanded(item)">
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+      }
+      <ng-template [ngTemplateOutlet]="actionsTemplate() || defaultActionTemplate"
+        [ngTemplateOutletContext]="{item: item}"></ng-template>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let item" [attr.colspan]="columnsToDisplayWithExpand().length">
+      <div class="edit-item-wrapper" [class.edit-item-wrapper-expanded]="isExpanded(item)">
+        <div class="edit-item">
+          <app-edit-item [item]="item" [columns]="columns()" (save)="editItem($event)" (cancel)="cancelItem()"
+            (delete)="deleteItem($event)"></app-edit-item>
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand()" class="header-row"></tr>
+  <tr mat-row *matRowDef="let item; columns: columnsToDisplayWithExpand();" class="item-row" [class.item-row-editable]="editable()"
+    [class.item-expanded-row]="isExpanded(item)" (click)="toggle(item)">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="edit-item-row"></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[10, 20, 100]" showFirstLastButtons aria-label="Select page">
+</mat-paginator>
+
+<ng-template #defaultValueTemplate let-item="item" let-column="column">  
+  {{ item[column] }}
+</ng-template>
+
+<ng-template #defaultActionTemplate let-item="item">
+  <!-- Default empty template -->
+</ng-template>

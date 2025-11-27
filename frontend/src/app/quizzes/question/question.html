@@ -1,0 +1,35 @@
+<h4>Question {{ getQuizProgress() }}</h4>
+
+<mat-card class="question-card" (click)="flipCard()" [class.question-card-visible]="showFront()"
+    [class.hide-transition]="isQuestionChanging()">
+    <mat-card-header>
+        <mat-card-title>{{ question().frontLabel }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="question-card-content">
+        {{ question().frontText }}
+    </mat-card-content>
+</mat-card>
+<mat-card class="question-card" (click)="flipCard()" [class.question-card-visible]="showBack()"
+    [class.hide-transition]="isQuestionChanging()">
+    <mat-card-header>
+        <mat-card-title>{{ question().backLabel }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="question-card-content">
+        {{ question().backText }}
+    </mat-card-content>
+</mat-card>
+<mat-card class="question-answer-card" [class.question-answer-card-visible]="isAnswered()">
+    <mat-card-content class="question-answer-card-content">
+        Did you get it right? Be honest! 😊
+    </mat-card-content>
+    <mat-card-actions>
+        <button matButton="tonal" (click)="onAnswer(true)" class="save-button">
+            <mat-icon>check</mat-icon>
+            I got it right!
+        </button>
+        <button matButton="tonal" (click)="onAnswer(false)" class="cancel-button">
+            <mat-icon>cancel</mat-icon>
+            I need to study more
+        </button>
+    </mat-card-actions>
+</mat-card>

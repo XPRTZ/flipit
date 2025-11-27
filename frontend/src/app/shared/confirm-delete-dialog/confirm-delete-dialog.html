@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Confirm delete</h2>
+<mat-dialog-content>
+    <p>Are you sure you want to delete?</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button matButton [mat-dialog-close]="onOk()" cdkFocusInitial>
+        <mat-icon>check</mat-icon>
+        Ok
+    </button>
+    <button matButton [mat-dialog-close]="onNo()">
+        <mat-icon>cancel</mat-icon>
+        No Thanks
+    </button>
+</mat-dialog-actions>

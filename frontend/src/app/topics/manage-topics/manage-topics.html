@@ -1,0 +1,17 @@
+<h1>Manage Topics</h1>
+
+<app-item-list 
+  [name]="'topic'" 
+  [items]="topics()"
+  [columns]="getColumns()"
+  [actionsTemplate]="actions"
+  (add)="addTopic($event)"
+  (edit)="editTopic($event)"
+  (delete)="deleteTopic($event)">
+</app-item-list>
+  
+<ng-template #actions let-item="item">
+  <button matIconButton matTooltip="go to cards" aria-label="go to cards" (click)="goToCards(item); $event.stopPropagation()">
+    <mat-icon>link</mat-icon>
+  </button>
+</ng-template>

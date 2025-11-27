@@ -1,0 +1,24 @@
+<h1>Manage Cards</h1>
+@if (topic() === null) {
+    <p>Loading topic...</p>
+} @else {
+    <h3>Topic: {{topic()!.name}}</h3>
+    <app-item-list 
+        [name]="'card'" 
+        [items]="cards()" 
+        [columns]="getColumns()" 
+        [valueTemplate]="value" 
+        (add)="addCard($event)"
+        (edit)="editCard($event)" 
+        (delete)="deleteCard($event)" />
+}
+  
+<ng-template #value let-item="item" let-column="column">
+  @if (column === 'correctnessRatio') {
+    {{ item[column] | percent }}
+  } @else if (column === 'lastViewedAt') {
+    {{ item[column] | date:'dd-MM-yyyy HH:mm' }}
+  } @else {
+    {{ item[column] }}
+  }  
+</ng-template>

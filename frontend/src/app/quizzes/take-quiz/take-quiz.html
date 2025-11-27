@@ -1,0 +1,27 @@
+@if (quiz() === null) {
+    <p>Loading quiz...</p>
+} @else {
+    <h1>{{ quiz()!.isPracticeMode ? 'practice mode' : 'quiz mode' }}</h1>
+    <h3>Topic: {{ quiz()!.topicName }}</h3>
+
+    @if (question() !== null) {
+        <app-question [quiz]="quiz()!" [question]="question()!" (answer)="answerQuestion($event)"></app-question>
+    } @else {
+        <mat-card class="quiz-summary" animate.enter="quiz-summary-animation">
+            <mat-card-header>
+                <mat-card-title>
+                    <mat-icon>check</mat-icon>
+                    Quiz finished
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="quiz-result">
+                <p>
+                    You've answered {{ quiz()!.numberOfCorrectAnswers }} out of {{ quiz()!.numberOfQuestions }} questions correctly!
+                </p>
+                <p>
+                    {{ getCommentary() }}
+                </p>
+            </mat-card-content>
+        </mat-card>
+    }
+}

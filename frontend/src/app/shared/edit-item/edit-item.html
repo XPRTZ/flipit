@@ -1,0 +1,26 @@
+<form [formGroup]="form" (keyup.enter)="onSave()" (keyup.delete)="onDelete()" (keyup.escape)="onCancel()">
+    @for (column of columnsToDisplay(); track column) {
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>{{getLabel(column)}}</mat-label>
+            <input matInput formControlName="{{column}}" />
+            <mat-error *ngIf="form.get(column)?.hasError('required')">
+                {{getLabel(column)}} is required
+            </mat-error>
+        </mat-form-field>
+    }
+        
+    <div>
+        <button matButton="tonal" (click)="onSave()" [disabled]="form.invalid" class="save-button">
+            <mat-icon>save</mat-icon>
+            Save
+        </button>
+        <button matButton="tonal" (click)="onCancel()" class="cancel-button">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+        </button>
+        <button matButton="tonal" (click)="onDelete()" class="delete-button">
+            <mat-icon>delete</mat-icon>
+            Delete
+        </button>
+    </div>
+</form>

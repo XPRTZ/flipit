@@ -19,7 +19,17 @@ services:
     restart: always
     volumes:
       - redis_data:/data
+  monitoring:
+    image: grafana/otel-lgtm:latest
+    ports:
+      - "3000:3000"
+      - "4317:4317"
+      - "4318:4318"
+    restart: always
+    volumes:
+      - grafana_data:/data
 
 volumes:
   sql_data:
   redis_data:
+  grafana_data:

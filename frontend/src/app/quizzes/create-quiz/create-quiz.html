@@ -1,0 +1,110 @@
+<h1>Quiz yourself</h1>
+<mat-expansion-panel expanded="true" class="create-quiz-container" (keyup.enter)="onSubmit()">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <mat-icon>add</mat-icon>
+            Create a Quiz
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-field">
+            <mat-label class="form-label">Quiz Mode</mat-label>
+            <mat-button-toggle-group formControlName="mode" class="create-quiz-button-toggle-group">
+                <mat-button-toggle value="quiz" class="create-quiz-button-toggle">
+                    <label>Quiz</label>
+                    <span class="create-quiz-button-toggle-description">
+                        In quiz mode, the answers you give will be remembered and they will influence the
+                        cards you see in future quizzes.
+                    </span>
+                </mat-button-toggle>
+                <mat-button-toggle value="practice" class="create-quiz-button-toggle">
+                    <label>Practice</label>
+                    <span class="create-quiz-button-toggle-description">
+                        Practice mode works like quiz mode, but your answers won't be remembered.
+                    </span>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <mat-error *ngIf="form.get('mode')?.hasError('required')">
+                Quiz Mode is required
+            </mat-error>
+        </div>
+        <div class="form-field">
+            <mat-label class="form-label">Topic</mat-label>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-select formControlName="topic" class="create-quiz-select" (selectionChange)="onTopicChange()">
+                    <mat-option *ngFor="let topic of topics()" [value]="topic">
+                        {{ topic.name }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('topic')?.hasError('required')">
+                    Topic is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="form-field">
+            <mat-label class="form-label">Number of Questions</mat-label>
+            <mat-slider min="1" [max]="numberOfCards()" step="1" showTickMarks discrete class="create-quiz-slider">
+                <input matSliderThumb formControlName="numberOfQuestions" />
+            </mat-slider>
+            <mat-error *ngIf="form.get('numberOfQuestions')?.hasError('required')">
+                Number of Questions is required
+            </mat-error>
+            <mat-error
+                *ngIf="form.get('numberOfQuestions')?.hasError('min') || form.get('numberOfQuestions')?.hasError('max')">
+                Please enter a value between 1 and {{ numberOfCards() }}
+            </mat-error>
+        </div>
+        <div class="form-field">
+            <mat-label class="form-label">Card side</mat-label>
+            <mat-button-toggle-group formControlName="side" class="create-quiz-button-toggle-group">
+                <mat-button-toggle value="front" class="create-quiz-button-toggle">
+                    <label>Front ({{ frontLabel() }})</label>
+                    <span class="create-quiz-button-toggle-description">
+                        Start with the front side of the card.
+                    </span>
+                </mat-button-toggle>
+                <mat-button-toggle value="back" class="create-quiz-button-toggle">
+                    <label>Back ({{ backLabel() }})</label>
+                    <span class="create-quiz-button-toggle-description">
+                        Start with the back side of the card.
+                    </span>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <mat-error *ngIf="form.get('side')?.hasError('required')">
+                Card side is required
+            </mat-error>
+        </div>
+        <button matButton="tonal" type="submit" [disabled]="form.invalid" class="start-button">
+            <mat-icon>play_arrow</mat-icon>
+            Start
+        </button>
+    </form>
+</mat-expansion-panel>
+
+<mat-divider/>
+<h3>Previous quizzes</h3>
+
+<app-item-list 
+  [name]="'quiz'" 
+  [items]="quizzes()"
+  [columns]="getColumns()"
+  [editable]="false"
+  [valueTemplate]="value"
+  [actionsTemplate]="actions">
+</app-item-list>
+  
+<ng-template #value let-item="item" let-column="column">
+  @if (column === 'showFirst') {
+    {{ item[column] | cardSide }}
+  } @else if (column === 'isPracticeMode') {
+    {{ (item[column] ? 'yes' : 'no') }}
+  } @else {
+    {{ item[column] }}
+  }  
+</ng-template>
+  
+<ng-template #actions let-item="item">
+  <button matIconButton matTooltip="go to quiz" aria-label="go to quiz" (click)="goToQuiz(item); $event.stopPropagation()">
+    <mat-icon>play_arrow</mat-icon>
+  </button>
+</ng-template>

@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:5411
+
+### Get all topics
+GET {{baseUrl}}/topic
+
+### Get all cards for a topic
+GET {{baseUrl}}/topic/3874f755-3596-4825-b348-9fade9cfe084/card

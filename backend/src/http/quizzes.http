@@ -1,0 +1,8 @@
+### Answer question
+POST http://localhost:5411/quiz/150a8a7a-dd62-41af-9484-0fd3e433f76d/answer-question
+Content-Type: application/json
+
+{
+    "questionId": "8564a723-b3b4-477f-9202-07d5b612a9c4",
+    "isCorrect": true
+}
