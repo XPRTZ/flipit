@@ -22,31 +22,6 @@ public class Card : AggregateRoot
         Back = back;
     }
 
-    public ErrorOr<double> CalculateProbability(IEnumerable<IIncludeInQuizRule> rules)
-    {
-        var r = rules.ToList();
-        if (r.Count == 0)
-        {
-            return Error.Validation(description: "Rules are empty.");
-        }
-        
-        double probability = 0;
-        double weight = 0;
-        foreach (var rule in r)
-        {
-            var p = rule.CalculateProbability(this);
-            probability += p * rule.Weight;
-            weight += rule.Weight;
-        }
-
-        if (weight == 0)
-        {
-            return Error.Validation(description: "Each rule should have a weight greater than zero.");
-        }
-        
-        return probability / weight;
-    }
-
     public ErrorOr<Card> Update(string front, string back)
     {
         var errors = Validate(TopicId, front, back);
